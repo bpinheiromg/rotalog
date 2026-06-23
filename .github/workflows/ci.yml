@@ -24,9 +24,18 @@ jobs:
         working-directory: ./rotalog-api-frotas
         run: mvn clean install
 
+      # ---------- .NET service ----------
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'   # adjust as needed
+
       - name: Build rotalog-api-notificacoes
         working-directory: ./rotalog-api-notificacoes
-        run: mvn clean install
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+          # dotnet test   # uncomment if you have tests
 
       # ---------- Node/Express service ----------
       - name: Set up Node
