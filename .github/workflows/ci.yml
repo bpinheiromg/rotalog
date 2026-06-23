@@ -1,0 +1,62 @@
+name: CI – Rotalog Suite
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # ---------- Java services ----------
+      - name: Set up Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+
+      - name: Build rotalog-api-frotas
+        working-directory: ./rotalog-api-frotas
+        run: mvn clean install
+
+      - name: Build rotalog-api-notificacoes
+        working-directory: ./rotalog-api-notificacoes
+        run: mvn clean install
+
+      # ---------- Node/Express service ----------
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & test rotalog-api-entregas
+        working-directory: ./rotalog-api-entregas
+        run: |
+          npm ci
+          npm test
+
+      # ---------- Workspace utilities (optional) ----------
+      - name: Install & lint workspace (if present)
+        working-directory: ./rotalog-workspace
+        run: |
+          npm ci
+          npm run lint
+        continue-on-error: true
+
+      # ---------- Front‑end (Nx) ----------
+      - name: Install Nx workspace dependencies
+        working-directory: ./rotalog-frontend
+        run: npm ci
+
+      - name: Build all frontend apps
+        working-directory: ./rotalog-frontend
+        run: npx nx run-many --target=build --all
+
+      - name: Run Jest + Playwright tests
+        working-directory: ./rotalog-frontend
+        run: npx nx affected --target=test

@@ -1,0 +1,20 @@
+[submodule "rotalog-api-frotas"]
+	path = rotalog-api-frotas
+	url = https://github.com/bpinheiromg/rotalog-api-frotas.git
+	branch = main
+[submodule "rotalog-api-entregas"]
+	path = rotalog-api-entregas
+	url = https://github.com/bpinheiromg/rotalog-api-entregas.git
+	branch = main
+[submodule "rotalog-api-notificacoes"]
+	path = rotalog-api-notificacoes
+	url = https://github.com/bpinheiromg/rotalog-api-notificacoes.git
+	branch = main
+[submodule "rotalog-workspace"]
+	path = rotalog-workspace
+	url = https://github.com/bpinheiromg/rotalog-workspace.git
+	branch = main
+[submodule "rotalog-frontend"]
+	path = rotalog-frontend
+	url = https://github.com/bpinheiromg/rotalog-frontend.git
+	branch = main
