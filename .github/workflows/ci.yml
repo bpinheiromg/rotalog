@@ -43,6 +43,21 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Verify lockfile is in sync (package.json ↔ package-lock.json)
+        working-directory: ./rotalog-api-entregas
+        run: |
+          # Protege contra a regressão que quebrou o `npm CI`:
+          # dessincronia entre package.json e package-lock.json (ex. entradas
+          # órfãs como cors/pg-hstore). `npm ci --dry-run` aborta se estiverem
+          # fora de sync.
+          npm ci --dry-run
+
+      - name: Validate OpenAPI spec
+        working-directory: ./rotalog-api-entregas
+        run: |
+          # Garante que a documentação de interfaces existe e é um YAML válido.
+          node -e "const yaml=require('js-yaml'),fs=require('fs');const s=yaml.load(fs.readFileSync('docs/openapi.yaml','utf8'));if(!s||s.openapi!=='3.0.3'){console.error('openapi.yaml inválido ou versão inesperada');process.exit(1);}console.log('openapi.yaml OK —',Object.keys(s.paths).length,'paths,',Object.keys(s.components.schemas).length,'schemas');"
+
       - name: Install & test rotalog-api-entregas
         working-directory: ./rotalog-api-entregas
         run: |
